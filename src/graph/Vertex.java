@@ -3,32 +3,39 @@ package graph;
 public class Vertex {
 
 	private int ID;
-	private String name;
 	public static int vertexCount = 0;
+	
+	// used for drawing vertices, not needed for Djikstra's
+	private int x;
+	private int y;
 	
 	public Vertex() {
 		vertexCount++;
 		this.ID = vertexCount;
 	}
 	
-	public Vertex(String name) {
-		this();
-		this.name = name;
-	}
-	
 	public int getId() {
 		return this.ID;
 	}
 	
-	public String getName() {
-		if (name == null) {
-			return "ID: " + ID;
-		}
-		return name + ", ID: " + ID;
+	public int getX() {
+		return this.x;
+	}
+	
+	public int gety() {
+		return this.y;
+	}
+	
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
 	}
 	
 	@Override
 	public String toString() {
-		return this.getName();
+		return "ID: " + ID;
 	}
 }
