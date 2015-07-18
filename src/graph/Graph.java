@@ -27,22 +27,24 @@ public class Graph {
 	// Static factory convenience methods
 	
 	public static Graph createGraph(int numVertices) {
-		Random rand = new Random();
+		if (numVertices < 1) {
+			throw new IllegalArgumentException("Must contain 1 or more vertices");
+		}
 		
+		Random rand = new Random();
 		List<Vertex> vertices = new ArrayList<Vertex>();
 		List<Edge> edges = new ArrayList<Edge>();
 
 		Vertex first = new Vertex();
-		Vertex second = new Vertex();
 		vertices.add(first);
-		vertices.add(second);
-		edges.add(new Edge(1, first, second));
 		
-		for (int i = 1; i < numVertices + 1; i++) {
+		for (int i = 1; i < numVertices; i++) {
 			Vertex v2 = new Vertex();
 			vertices.add(v2);
-			int randomVertex = rand.nextInt(vertices.size() - 1);
-			Edge edge = new Edge(i, vertices.get(randomVertex), v2);
+			
+			int randomVertexIndex = vertices.size() > 1 ? rand.nextInt(vertices.size() - 1) : 0; 
+
+			Edge edge = new Edge(i, vertices.get(randomVertexIndex), v2);
 			edge.setColor(Graph.randomColor(rand));
 			edges.add(edge);
 		}
