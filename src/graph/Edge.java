@@ -1,10 +1,15 @@
 package graph;
 
+import java.awt.Color;
+
 public class Edge {
 	
 	private int weight;
 	private Vertex v1;
 	private Vertex v2;
+	
+	// For visualizing graph
+	private Color color;
 	
 	public Edge(int weight, Vertex v1, Vertex v2) {
 		this.weight = weight;
@@ -22,6 +27,17 @@ public class Edge {
 	
 	public Vertex getV2() {
 		return this.v2;
+	}
+	
+	public Color getColor() {
+		if (this.color == null) {
+			return Color.BLUE;
+		}
+		return this.color;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
 	}
 	
 	@Override

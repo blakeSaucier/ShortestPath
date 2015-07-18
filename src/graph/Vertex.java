@@ -22,7 +22,7 @@ public class Vertex {
 		return this.x;
 	}
 	
-	public int gety() {
+	public int getY() {
 		return this.y;
 	}
 	
