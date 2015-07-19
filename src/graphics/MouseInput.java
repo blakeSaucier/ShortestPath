@@ -28,6 +28,7 @@ public class MouseInput extends MouseAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		selectVertex(e.getPoint());
+		frame.paint(frame.getGraphics());
 	}
 
 	@Override
@@ -41,7 +42,6 @@ public class MouseInput extends MouseAdapter {
 			selectedVertex.setX(e.getX());
 			selectedVertex.setY(e.getY());
 		}
-		this.frame.paint(frame.getGraphics());
 	}
 
 	private void selectVertex(Point point) {

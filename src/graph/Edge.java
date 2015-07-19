@@ -44,4 +44,14 @@ public class Edge {
 	public String toString() {
 		return v1 + " <-- " + weight + " --> " + v2;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		Edge arg = (Edge) obj;
+		return ( (arg.getV1().equals(this.v1) && arg.getV2().equals(this.v2)) ||
+				( arg.getV1().equals(this.v2) && arg.getV2().equals(this.v1)));
+	}
 }

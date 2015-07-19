@@ -38,4 +38,13 @@ public class Vertex {
 	public String toString() {
 		return "ID: " + ID;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		Vertex arg = (Vertex) obj;
+		return arg.ID == this.ID;
+	}
 }

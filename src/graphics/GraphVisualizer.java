@@ -25,6 +25,7 @@ public class GraphVisualizer extends JFrame{
 	private MouseInput input;
 	private Button repositionVerticesButton;
 	private Button regenerateGraphButton;
+	private Button addDensityButton;
 	
 	public GraphVisualizer(Graph graph) {
 		super("Graph Visualizer");
@@ -37,6 +38,7 @@ public class GraphVisualizer extends JFrame{
 		input = new MouseInput(this.graph, this);
 		repositionVerticesButton = new Button("Reset vertex positions");
 		regenerateGraphButton = new Button("Regenerate Graph");
+		addDensityButton = new Button("Increase Edge Density");
 		setupButtons();
 		this.setLayout(new FlowLayout());
 		
@@ -77,11 +79,11 @@ public class GraphVisualizer extends JFrame{
 	private void setupButtons() {
 		repositionVerticesButton.setFocusable(false);
 		regenerateGraphButton.setFocusable(false);
+		addDensityButton.setFocusable(false);
 		repositionVerticesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				generateVertexPoints();
 				paint(getGraphics());
-				//update(getGraphics());
 			}
 		});
 		regenerateGraphButton.addActionListener(new ActionListener() {
@@ -92,8 +94,15 @@ public class GraphVisualizer extends JFrame{
 				//update(getGraphics());
 			}
 		});
+		addDensityButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				graph.addDensity();
+				paint(getGraphics());
+			}
+		});
 		this.add(repositionVerticesButton);
 		this.add(regenerateGraphButton);
+		this.add(addDensityButton);
 	}
 	
 	private void generateVertexPoints() {
