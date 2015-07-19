@@ -23,6 +23,14 @@ public class Graph {
 		return this.edges;
 	}
 	
+	public void setVertices(List<Vertex> vertices) {
+		this.vertices = vertices;
+	}
+	
+	public void setEdges(List<Edge> edges) {
+		this.edges = edges;
+	}
+	
 	public void addDensity() {
 		Random rand = new Random();
 		for(int i = 0; i < this.vertices.size(); i++) {

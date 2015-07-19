@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import tests.TestGraph;
 
-public class GraphVisualizer extends JFrame{
+public class GraphVisualizer extends JPanel{
 
 	private static final int SCREEN_PADDING = 100;
 	private static final int GRID_SIZE = 100;
@@ -22,39 +22,33 @@ public class GraphVisualizer extends JFrame{
 	
 	private Graph graph;
 	private Random random;
-	private MouseInput input;
 	private Button repositionVerticesButton;
 	private Button regenerateGraphButton;
 	private Button addDensityButton;
-	
+	private MouseInput input;
+
 	public GraphVisualizer(Graph graph) {
-		super("Graph Visualizer");
 		this.graph = graph;
 		init();
 	}
 	
 	private void init() {
 		random = new Random();
-		input = new MouseInput(this.graph, this);
+		setSize(1200, 800);
+		input = new MouseInput(graph, this);
+		addMouseListener(input);
+		addMouseMotionListener(input);
 		repositionVerticesButton = new Button("Reset vertex positions");
 		regenerateGraphButton = new Button("Regenerate Graph");
 		addDensityButton = new Button("Increase Edge Density");
 		setupButtons();
 		this.setLayout(new FlowLayout());
-		
-		setSize(1200, 800);
-		setVisible(true);
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		addMouseListener(input);
-		addMouseMotionListener(input);
 		generateVertexPoints();
 	}
-
-	public void paint(Graphics g) {
+	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
-		
 		g2d.setColor(Color.GRAY);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
@@ -74,6 +68,7 @@ public class GraphVisualizer extends JFrame{
 			g2d.setColor(Color.DARK_GRAY);
 			g2d.drawString(vertex.toString(), vertex.getX() -10 , vertex.getY() - 12);
 		}
+		g2d.dispose();
 	}
 	
 	private void setupButtons() {
@@ -91,7 +86,6 @@ public class GraphVisualizer extends JFrame{
 				generateNewGraph();
 				generateVertexPoints();
 				paint(getGraphics());
-				//update(getGraphics());
 			}
 		});
 		addDensityButton.addActionListener(new ActionListener() {
@@ -135,8 +129,9 @@ public class GraphVisualizer extends JFrame{
 	}
 	
 	private void generateNewGraph() {
-		this.graph = Graph.makeGraph(TestGraph.VERTICES);
-		input.setGraph(graph);
+		Graph tempGraph = Graph.makeGraph(TestGraph.VERTICES);
+		this.graph.setVertices(tempGraph.getVertices());
+		this.graph.setEdges(tempGraph.getEdges());
 	}
 	
 	////////////////////////////////////////////////////////////

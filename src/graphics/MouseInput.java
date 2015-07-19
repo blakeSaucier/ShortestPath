@@ -7,18 +7,18 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class MouseInput extends MouseAdapter {
 
 	private Graph graph;
-	private JFrame frame;
+	private JPanel panel;
 
 	private Vertex selectedVertex = null;
 
-	public MouseInput(Graph graph, JFrame frame) {
+	public MouseInput(Graph graph, JPanel panel) {
 		this.graph = graph;
-		this.frame = frame;
+		this.panel = panel;
 	}
 	
 	public void setGraph(Graph graph) {
@@ -28,12 +28,12 @@ public class MouseInput extends MouseAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		selectVertex(e.getPoint());
-		frame.paint(frame.getGraphics());
+		panel.repaint();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		frame.paint(frame.getGraphics());
+		panel.repaint();
 	}
 
 	@Override
@@ -41,6 +41,7 @@ public class MouseInput extends MouseAdapter {
 		if (selectedVertex != null) {
 			selectedVertex.setX(e.getX());
 			selectedVertex.setY(e.getY());
+			panel.repaint();
 		}
 	}
 

@@ -1,7 +1,8 @@
 package tests;
+
 import algorithm.Djikstra;
 import graph.Graph;
-import graphics.GraphVisualizer;
+import graphics.UIFrame;
 
 public class TestGraph {
 	
@@ -9,7 +10,8 @@ public class TestGraph {
 	
 	public static void main(String[] args) {
 		Graph graph = Graph.makeGraph(VERTICES);
-		new GraphVisualizer(graph);
+		new UIFrame(graph);
+		
 		Djikstra djikstra = new Djikstra(graph);
 		djikstra.execute();
 	}
