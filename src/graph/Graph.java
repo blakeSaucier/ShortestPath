@@ -26,7 +26,7 @@ public class Graph {
 	//////////////////////////////////////////////////////////////
 	// Static factory convenience methods
 	
-	public static Graph createGraph(int numVertices) {
+	public static Graph makeGraph(int numVertices) {
 		if (numVertices < 1) {
 			throw new IllegalArgumentException("Must contain 1 or more vertices");
 		}

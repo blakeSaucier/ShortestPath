@@ -6,47 +6,45 @@ import graph.Vertex;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import tests.TestGraph;
 
 public class GraphVisualizer extends Frame{
 
 	private static final int SCREEN_PADDING = 100;
 	private static final int GRID_SIZE = 100;
 	private static final long serialVersionUID = 1L;
+	
 	private Graph graph;
 	private Random random;
-	private final Button button;
+	private final Button repositionVerticesButton;
+	private final Button regenerateGraphButton;
 
 	public GraphVisualizer(Graph graph) {
-		super("Java 2D Example01");
+		super("Graph Visualizer");
 		this.graph = graph;
 		random = new Random();
-		button = new Button("Reset vertex positions");
-		setupButton();
+		
+		repositionVerticesButton = new Button("Reset vertex positions");
+		regenerateGraphButton = new Button("Regenerate Graph");
+		setupButtons();
 		this.setLayout(new FlowLayout());
 		
 		setSize(1200, 800);
 		setVisible(true);
 		setBackground(Color.GRAY);
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				dispose();
 				System.exit(0);
 			}
 		});
-		generateVertexPoints();
 		
-	}
-
-	private void setupButton() {
-		button.setFocusable(false);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				generateVertexPoints();
-				update(getGraphics());
-			}
-		});
-		this.add(button);
+		generateVertexPoints();
 	}
 
 	public void paint(Graphics g) {
@@ -70,24 +68,69 @@ public class GraphVisualizer extends Frame{
 		}
 	}
 	
+	private void setupButtons() {
+		repositionVerticesButton.setFocusable(false);
+		regenerateGraphButton.setFocusable(false);
+		repositionVerticesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				generateVertexPoints();
+				update(getGraphics());
+			}
+		});
+		regenerateGraphButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				generateNewGraph();
+				generateVertexPoints();
+				update(getGraphics());
+			}
+		});
+		this.add(repositionVerticesButton);
+		this.add(regenerateGraphButton);
+	}
+	
 	private void generateVertexPoints() {
+		List<VertexCoordinate> coordinates = getAllPossibleCoordinates();
 		for(Vertex vertex: graph.getVertices()) {
-			int x = randomXCoord();
-			int y = randomYCoord();
+			VertexCoordinate coord = pickRandomCoordinate(coordinates);
+			int x = coord.x;
+			int y = coord.y;
 			vertex.setX(x);
 			vertex.setY(y);
 		}
 	}
 	
-	private int randomXCoord() {
-		int screenWidth = this.getWidth() - SCREEN_PADDING;
-		int positions = screenWidth / GRID_SIZE;
-		return (random.nextInt(positions) * GRID_SIZE) + SCREEN_PADDING;
+	private VertexCoordinate pickRandomCoordinate(List<VertexCoordinate> coordinates) {
+		return coordinates.remove(random.nextInt(coordinates.size() - 1));
 	}
 	
-	private int randomYCoord() {
-		int screenHeight = this.getHeight() - SCREEN_PADDING;
-		int positions = screenHeight / GRID_SIZE;
-		return (random.nextInt(positions) * GRID_SIZE) + SCREEN_PADDING;
+	private List<VertexCoordinate> getAllPossibleCoordinates() {
+		List<VertexCoordinate> coordinates = new ArrayList<VertexCoordinate>();
+		int numColumns = (this.getWidth() - SCREEN_PADDING) / GRID_SIZE;
+		int numRows = (this.getHeight() - SCREEN_PADDING) / GRID_SIZE;
+		for (int column = 0; column < numColumns; column++) {
+			for (int row = 0; row < numRows; row++) {
+				int x = column * GRID_SIZE + SCREEN_PADDING;
+				int y = row * GRID_SIZE + SCREEN_PADDING;
+				coordinates.add(new VertexCoordinate(x, y));
+			}
+		}
+		return coordinates;
 	}
+	
+	private void generateNewGraph() {
+		this.graph = Graph.makeGraph(TestGraph.VERTICES);
+	}
+	
+	////////////////////////////////////////////////////////////
+	// private class for handling locations of the vertices
+	
+	private class VertexCoordinate {
+		int x;
+		int y;
+		
+		public VertexCoordinate(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	};
 }
