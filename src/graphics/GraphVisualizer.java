@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.Timer;
+
 import tests.TestGraph;
 
 public class GraphVisualizer extends Frame{
@@ -22,6 +24,8 @@ public class GraphVisualizer extends Frame{
 	private Random random;
 	private final Button repositionVerticesButton;
 	private final Button regenerateGraphButton;
+	
+	private Vertex selectedVertex = null;
 
 	public GraphVisualizer(Graph graph) {
 		super("Graph Visualizer");
@@ -35,23 +39,54 @@ public class GraphVisualizer extends Frame{
 		
 		setSize(1200, 800);
 		setVisible(true);
-		setBackground(Color.GRAY);
 		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				dispose();
 				System.exit(0);
+				getGraphics().dispose();
 			}
 		});
 		
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				selectVertex(e.getPoint());
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(e);
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				paint(getGraphics());
+			}
+			
+		});
+		
+		addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (selectedVertex != null) {
+					selectedVertex.setX(e.getX());
+					selectedVertex.setY(e.getY());
+				}
+			}
+		});
+
 		generateVertexPoints();
 	}
 
 	public void paint(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
+		
+		g2d.setColor(Color.GRAY);
+		g2d.fillRect(0, 0, getWidth(), getHeight());
+		
 		g2d.setStroke(new BasicStroke(3));
 		g2d.setFont(new Font("SanSerif",Font.BOLD, 20));
-
 		for (Edge edge: graph.getEdges()) {
 			g2d.setColor(edge.getColor());
 			g2d.drawLine(edge.getV1().getX(), edge.getV1().getY(), edge.getV2().getX(), edge.getV2().getY());
@@ -68,20 +103,36 @@ public class GraphVisualizer extends Frame{
 		}
 	}
 	
+	private void selectVertex(Point point) {
+		for(Vertex vertex: graph.getVertices()) {
+			if (isContact(point, vertex)) {
+				this.selectedVertex = vertex;
+				return;
+			}
+		}
+		this.selectedVertex = null;
+	}
+	
+	private boolean isContact(Point point, Vertex vertex) {
+		return ((Math.abs(point.getX() - vertex.getX()) < 10) && (Math.abs(point.getY() - vertex.getY()) < 10));
+	}
+	
 	private void setupButtons() {
 		repositionVerticesButton.setFocusable(false);
 		regenerateGraphButton.setFocusable(false);
 		repositionVerticesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				generateVertexPoints();
-				update(getGraphics());
+				paint(getGraphics());
+				//update(getGraphics());
 			}
 		});
 		regenerateGraphButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				generateNewGraph();
 				generateVertexPoints();
-				update(getGraphics());
+				paint(getGraphics());
+				//update(getGraphics());
 			}
 		});
 		this.add(repositionVerticesButton);

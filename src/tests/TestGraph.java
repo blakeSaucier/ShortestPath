@@ -5,7 +5,7 @@ import graphics.GraphVisualizer;
 
 public class TestGraph {
 	
-	public static final int VERTICES = 6;
+	public static final int VERTICES = 12;
 	
 	public static void main(String[] args) {
 		Graph graph = Graph.makeGraph(VERTICES);
