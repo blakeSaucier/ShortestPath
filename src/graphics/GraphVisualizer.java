@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.Timer;
+import javax.swing.JFrame;
 
 import tests.TestGraph;
 
-public class GraphVisualizer extends Frame{
+public class GraphVisualizer extends JFrame{
 
 	private static final int SCREEN_PADDING = 100;
 	private static final int GRID_SIZE = 100;
@@ -22,16 +22,19 @@ public class GraphVisualizer extends Frame{
 	
 	private Graph graph;
 	private Random random;
-	private final Button repositionVerticesButton;
-	private final Button regenerateGraphButton;
+	private MouseInput input;
+	private Button repositionVerticesButton;
+	private Button regenerateGraphButton;
 	
-	private Vertex selectedVertex = null;
-
 	public GraphVisualizer(Graph graph) {
 		super("Graph Visualizer");
 		this.graph = graph;
+		init();
+	}
+	
+	private void init() {
 		random = new Random();
-		
+		input = new MouseInput(this.graph, this);
 		repositionVerticesButton = new Button("Reset vertex positions");
 		regenerateGraphButton = new Button("Regenerate Graph");
 		setupButtons();
@@ -40,42 +43,10 @@ public class GraphVisualizer extends Frame{
 		setSize(1200, 800);
 		setVisible(true);
 		
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				dispose();
-				System.exit(0);
-				getGraphics().dispose();
-			}
-		});
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				selectVertex(e.getPoint());
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println(e);
-			}
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				paint(getGraphics());
-			}
-			
-		});
-		
-		addMouseMotionListener(new MouseAdapter() {
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if (selectedVertex != null) {
-					selectedVertex.setX(e.getX());
-					selectedVertex.setY(e.getY());
-				}
-			}
-		});
-
+		addMouseListener(input);
+		addMouseMotionListener(input);
 		generateVertexPoints();
 	}
 
@@ -101,20 +72,6 @@ public class GraphVisualizer extends Frame{
 			g2d.setColor(Color.DARK_GRAY);
 			g2d.drawString(vertex.toString(), vertex.getX() -10 , vertex.getY() - 12);
 		}
-	}
-	
-	private void selectVertex(Point point) {
-		for(Vertex vertex: graph.getVertices()) {
-			if (isContact(point, vertex)) {
-				this.selectedVertex = vertex;
-				return;
-			}
-		}
-		this.selectedVertex = null;
-	}
-	
-	private boolean isContact(Point point, Vertex vertex) {
-		return ((Math.abs(point.getX() - vertex.getX()) < 10) && (Math.abs(point.getY() - vertex.getY()) < 10));
 	}
 	
 	private void setupButtons() {
@@ -170,6 +127,7 @@ public class GraphVisualizer extends Frame{
 	
 	private void generateNewGraph() {
 		this.graph = Graph.makeGraph(TestGraph.VERTICES);
+		input.setGraph(graph);
 	}
 	
 	////////////////////////////////////////////////////////////
