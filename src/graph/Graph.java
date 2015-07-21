@@ -38,6 +38,8 @@ public class Graph {
 				Edge edge = Edge.makeEdge(vertices.get(randomV1), vertices.get(randomV2));
 				if (isEdgeUnique(edges, edge)) {
 					edges.add(edge);
+				} else {
+					edge.deregisterAdjacencies();
 				}
 			}
 		}
@@ -81,7 +83,7 @@ public class Graph {
 		}
 		return new Graph(vertices, edges);
 	}
-	
+		
 	private static boolean isEdgeUnique(List<Edge> edges, Edge edge) {
 		for (Edge e: edges) {
 			if (e.equals(edge)) {

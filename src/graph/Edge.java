@@ -16,6 +16,17 @@ public class Edge {
 		this.weight = weight;
 		this.v1 = v1;
 		this.v2 = v2;
+		registerAdjacencies();
+	}
+	
+	private void registerAdjacencies() {
+		v1.registerAdjacency(v2);
+		v2.registerAdjacency(v1);
+	}
+	
+	public void deregisterAdjacencies() {
+		v1.deregisterAdjacency(v2);
+		v2.deregisterAdjacency(v1);
 	}
 	
 	public int getWeight() {
