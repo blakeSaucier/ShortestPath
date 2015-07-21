@@ -18,6 +18,9 @@ public class Vertex {
 		return this.ID;
 	}
 	
+	///////////////////////////////////////////////////
+	// X and Y coordinates are for graph visualization
+	
 	public int getX() {
 		return this.x;
 	}

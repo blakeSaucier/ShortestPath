@@ -1,6 +1,5 @@
 package graph;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -31,30 +30,37 @@ public class Graph {
 		this.edges = edges;
 	}
 	
-	public void addDensity() {
-		Random rand = new Random();
+	public void increaseEdgeDensity() {
 		for(int i = 0; i < this.vertices.size(); i++) {
-			int randomV1 = randomVertexIndex(vertices, rand);
-			int randomV2 = randomVertexIndex(vertices, rand);
+			int randomV1 = randomVertexIndex(vertices);
+			int randomV2 = randomVertexIndex(vertices);
 			if (randomV1 != randomV2) {
-				Edge edge = new Edge(i, vertices.get(randomV1), vertices.get(randomV2));
+				Edge edge = Edge.makeEdge(vertices.get(randomV1), vertices.get(randomV2));
 				if (isEdgeUnique(edges, edge)) {
-					edge.setColor(Graph.randomColor(rand));
 					edges.add(edge);
 				}
 			}
 		}
 	}
 	
+	public void addVertexAndEdge(Vertex v, Edge e) {
+		this.vertices.add(v);
+		this.edges.add(e);
+	}
+	
+	public static int randomVertexIndex(List<Vertex> vertices) {
+		Random rand = new Random();
+		return vertices.size() > 1 ? rand.nextInt(vertices.size()) : 0; 
+	}
+		
 	//////////////////////////////////////////////////////////////
 	// Static factory convenience methods
 	
-	public static Graph makeGraph(int numVertices) {
+	public static Graph makeConnectedGraph(int numVertices) {
 		if (numVertices < 1) {
 			throw new IllegalArgumentException("Must contain 1 or more vertices");
 		}
 		
-		Random rand = new Random();
 		List<Vertex> vertices = new ArrayList<Vertex>(numVertices);
 		List<Edge> edges = new ArrayList<Edge>();
 
@@ -66,10 +72,11 @@ public class Graph {
 			Vertex v2 = new Vertex();
 			vertices.add(v2);
 			
-			int randomVertexIndex = randomVertexIndex(vertices, rand);
-
-			Edge edge = new Edge(i, vertices.get(randomVertexIndex), v2);
-			edge.setColor(Graph.randomColor(rand));
+			int randomVertexIndex = randomVertexIndex(vertices);
+			while (vertices.get(randomVertexIndex).getId() == v2.getId()) {
+				randomVertexIndex = randomVertexIndex(vertices);
+			}
+			Edge edge = Edge.makeEdge(vertices.get(randomVertexIndex), v2);
 			edges.add(edge);
 		}
 		return new Graph(vertices, edges);
@@ -82,16 +89,5 @@ public class Graph {
 			}
 		}
 		return true;
-	}
-	
-	private static int randomVertexIndex(List<Vertex> vertices, Random rand) {
-		return vertices.size() > 1 ? rand.nextInt(vertices.size() - 1) : 0; 
-	}
-	
-	private static Color randomColor(Random random) {
-		float r = random.nextFloat();
-		float g = random.nextFloat();
-		float b = random.nextFloat();
-		return new Color(r, g, b);
 	}
 }

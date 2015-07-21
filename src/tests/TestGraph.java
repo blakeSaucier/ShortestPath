@@ -6,10 +6,10 @@ import graphics.UIFrame;
 
 public class TestGraph {
 	
-	public static final int VERTICES = 12;
+	public static final int INITIAL_VERTICES_COUNT = 3;
 	
 	public static void main(String[] args) {
-		Graph graph = Graph.makeGraph(VERTICES);
+		Graph graph = Graph.makeConnectedGraph(INITIAL_VERTICES_COUNT);
 		new UIFrame(graph);
 		
 		Djikstra djikstra = new Djikstra(graph);

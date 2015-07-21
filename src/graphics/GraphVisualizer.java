@@ -24,8 +24,10 @@ public class GraphVisualizer extends JPanel{
 	private Random random;
 	private Button repositionVerticesButton;
 	private Button regenerateGraphButton;
-	private Button addDensityButton;
+	private Button increaseDensityButton;
+	private Button addVertexdButton;
 	private MouseInput input;
+	private List<VertexCoordinate> unusedCoordinates;
 
 	public GraphVisualizer(Graph graph) {
 		this.graph = graph;
@@ -35,12 +37,10 @@ public class GraphVisualizer extends JPanel{
 	private void init() {
 		random = new Random();
 		setSize(1200, 800);
+		unusedCoordinates = getAllPossibleCoordinates();
 		input = new MouseInput(graph, this);
 		addMouseListener(input);
 		addMouseMotionListener(input);
-		repositionVerticesButton = new Button("Reset vertex positions");
-		regenerateGraphButton = new Button("Regenerate Graph");
-		addDensityButton = new Button("Increase Edge Density");
 		setupButtons();
 		this.setLayout(new FlowLayout());
 		generateVertexPoints();
@@ -72,46 +72,62 @@ public class GraphVisualizer extends JPanel{
 	}
 	
 	private void setupButtons() {
+		repositionVerticesButton = new Button("Reset vertex positions");
+		regenerateGraphButton = new Button("Clear Graph");
+		increaseDensityButton = new Button("Increase Edge Density");
+		addVertexdButton = new Button("Add Vertex");
+		
+		// remove the annoying gray boxes around the buttons
 		repositionVerticesButton.setFocusable(false);
 		regenerateGraphButton.setFocusable(false);
-		addDensityButton.setFocusable(false);
+		increaseDensityButton.setFocusable(false);
+		addVertexdButton.setFocusable(false);
+		
+		// wire up the click events
 		repositionVerticesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				unusedCoordinates = getAllPossibleCoordinates();
 				generateVertexPoints();
-				paint(getGraphics());
+				repaint();
 			}
 		});
 		regenerateGraphButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				generateNewGraph();
 				generateVertexPoints();
-				paint(getGraphics());
+				repaint();
 			}
 		});
-		addDensityButton.addActionListener(new ActionListener() {
+		increaseDensityButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				graph.addDensity();
-				paint(getGraphics());
+				graph.increaseEdgeDensity();
+				repaint();
 			}
 		});
+		addVertexdButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addOneVertex();
+				repaint();
+			}
+		});
+		
+		// add buttons to Panel
 		this.add(repositionVerticesButton);
 		this.add(regenerateGraphButton);
-		this.add(addDensityButton);
+		this.add(addVertexdButton);
+		this.add(increaseDensityButton);
 	}
 	
 	private void generateVertexPoints() {
-		List<VertexCoordinate> coordinates = getAllPossibleCoordinates();
 		for(Vertex vertex: graph.getVertices()) {
-			VertexCoordinate coord = pickRandomCoordinate(coordinates);
-			int x = coord.x;
-			int y = coord.y;
-			vertex.setX(x);
-			vertex.setY(y);
+			VertexCoordinate coord = pickRandomCoordinate();
+			vertex.setX(coord.x);
+			vertex.setY(coord.y);
 		}
 	}
 	
-	private VertexCoordinate pickRandomCoordinate(List<VertexCoordinate> coordinates) {
-		return coordinates.remove(random.nextInt(coordinates.size() - 1));
+	private VertexCoordinate pickRandomCoordinate() {
+		return unusedCoordinates.remove(random.nextInt(unusedCoordinates.size() - 1));
 	}
 	
 	private List<VertexCoordinate> getAllPossibleCoordinates() {
@@ -128,8 +144,21 @@ public class GraphVisualizer extends JPanel{
 		return coordinates;
 	}
 	
+	private void addOneVertex() {
+		Vertex v1 = new Vertex();
+		VertexCoordinate coord = pickRandomCoordinate();
+		v1.setX(coord.x);
+		v1.setY(coord.y);
+		
+		int v2Index = Graph.randomVertexIndex(graph.getVertices());
+		Vertex v2 = graph.getVertices().get(v2Index);
+		Edge connectingEdge = Edge.makeEdge(v1, v2);
+		
+		graph.addVertexAndEdge(v1, connectingEdge);
+	}
+	
 	private void generateNewGraph() {
-		Graph tempGraph = Graph.makeGraph(TestGraph.VERTICES);
+		Graph tempGraph = Graph.makeConnectedGraph(TestGraph.INITIAL_VERTICES_COUNT);
 		this.graph.setVertices(tempGraph.getVertices());
 		this.graph.setEdges(tempGraph.getEdges());
 	}

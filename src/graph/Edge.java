@@ -1,6 +1,7 @@
 package graph;
 
 import java.awt.Color;
+import java.util.Random;
 
 public class Edge {
 	
@@ -39,6 +40,22 @@ public class Edge {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
+	public static Edge makeEdge(Vertex v1, Vertex v2) {
+		Random rand = new Random();
+		Edge result = new Edge(rand.nextInt(15) + 1, v1, v2);
+		result.setColor(Edge.randomColor());
+		return result;
+	}
+	
+	private static Color randomColor() {
+		Random random = new Random();
+		float r = random.nextFloat();
+		float g = random.nextFloat();
+		float b = random.nextFloat();
+		return new Color(r, g, b);
+	}
+	
 	
 	@Override
 	public String toString() {
