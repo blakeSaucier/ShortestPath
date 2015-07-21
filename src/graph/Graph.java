@@ -30,24 +30,25 @@ public class Graph {
 		this.edges = edges;
 	}
 	
+	public void addVertexAndEdge(Vertex v, Edge e) {
+		this.vertices.add(v);
+		this.edges.add(e);
+	}
+	
+	// Tries |V| times to create an edge between two vertices that don't already have an edge between them
 	public void increaseEdgeDensity() {
 		for(int i = 0; i < this.vertices.size(); i++) {
 			int randomV1 = randomVertexIndex(vertices);
 			int randomV2 = randomVertexIndex(vertices);
 			if (randomV1 != randomV2) {
 				Edge edge = Edge.makeEdge(vertices.get(randomV1), vertices.get(randomV2));
-				if (isEdgeUnique(edges, edge)) {
+				if (isEdgeUnique(edge)) {
 					edges.add(edge);
 				} else {
 					edge.deregisterAdjacencies();
 				}
 			}
 		}
-	}
-	
-	public void addVertexAndEdge(Vertex v, Edge e) {
-		this.vertices.add(v);
-		this.edges.add(e);
 	}
 	
 	public static int randomVertexIndex(List<Vertex> vertices) {
@@ -84,7 +85,7 @@ public class Graph {
 		return new Graph(vertices, edges);
 	}
 		
-	private static boolean isEdgeUnique(List<Edge> edges, Edge edge) {
+	private boolean isEdgeUnique(Edge edge) {
 		for (Edge e: edges) {
 			if (e.equals(edge)) {
 				return false;
