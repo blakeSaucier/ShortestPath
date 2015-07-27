@@ -13,6 +13,6 @@ public class TestGraph {
 		new UIFrame(graph);
 		
 		Djikstra djikstra = new Djikstra(graph);
-		djikstra.execute();
+		djikstra.execute(graph.getVertices().get(0));
 	}
 }

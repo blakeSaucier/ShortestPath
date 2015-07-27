@@ -42,6 +42,10 @@ public class Vertex {
 		return this.y;
 	}
 	
+	public List<Vertex> getAdjacencies() {
+		return this.adjacentVertices;
+	}
+	
 	public void setX(int x) {
 		this.x = x;
 	}

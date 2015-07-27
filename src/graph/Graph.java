@@ -22,6 +22,16 @@ public class Graph {
 		return this.edges;
 	}
 	
+	public Edge getEdge(Vertex v1, Vertex v2) {
+		for (Edge edge: this.edges) {
+			if ((edge.getV1() == v1 && edge.getV2() == v2) ||
+					(edge.getV2() == v1 && edge.getV1() == v2)) { 
+				return edge;
+			}
+		}
+		throw new IllegalArgumentException("Edge does not exist");
+	}
+	
 	public void setVertices(List<Vertex> vertices) {
 		this.vertices = vertices;
 	}
